@@ -6,8 +6,8 @@ import Home from "./pages/Home";
 import Courses from "./pages/Courses";
 // import Allocation from "./pages/Allocation";
 // import AllocationManage from "./pages/Allocation/AllocationManage";
-// import Departament from "./pages/Departament";
-// import Professor from "./pages/Professor";
+import Department from "./pages/Department";
+import Professor from "./pages/Professor";
 
 const routes = [
   {
@@ -27,21 +27,21 @@ const routes = [
   //   visible: false,
   //   component: AllocationManage,
   // },
-  // {
-  //   path: "/departament",
-  //   name: "Departament",
-  //   component: Departament,
-  // },
+   {
+     path: "/departament",
+     name: "Departament",
+     component: Department,
+   },
   {
     path: "/courses",
     name: "Courses",
     component: Courses,
   },
-  // {
-  //   path: "/professor",
-  //   name: "Professor",
-  //   component: Professor,
-  // },
+   {
+     path: "/professor",
+     name: "Professor",
+     component: Professor,
+   },
 ];
 
 const Router = () => (

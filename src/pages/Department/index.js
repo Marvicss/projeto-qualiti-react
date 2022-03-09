@@ -6,7 +6,8 @@ import Modal from "../../components/Modal/index";
 import Page from "../../components/Page/index";
 import api from "../../services/axios";
 
-const endpoint = "/courses";
+
+const endpoint = "/departments";
 
 const columns = [
   {
@@ -21,20 +22,21 @@ const columns = [
 
 const INITIAL_STATE = { id: 0, name: "" };
 
-const Courses = () => {
+const Department = () => {
   const [visible, setVisible] = useState(false);
-  const [course, setCourse] = useState(INITIAL_STATE);
+  const [department, setDepartment] = useState(INITIAL_STATE);
+  const [course, setCourse] = useState([])
 
   const handleSave = async (refetch) => {
     try {
-      if (course.id) {
-        await api.put(`${endpoint}/${course.id}`, {
-          name: course.name,
+      if (department.id) {
+        await api.put(`${endpoint}/${department.id}`, {
+          name: department.name,
         });
 
         toast.success("Atualizado com sucesso!");
       } else {
-        await api.post(endpoint, { name: course.name });
+        await api.post(endpoint, { name: department.name });
 
         toast.success("Cadastrado com sucesso!");
       }
@@ -50,8 +52,8 @@ const Courses = () => {
   const actions = [
     {
       name: "Edit",
-      action: (_course) => {
-        setCourse(_course);
+      action: (_department) => {
+        setDepartment(_department);
         setVisible(true);
       },
     },
@@ -72,33 +74,33 @@ const Courses = () => {
   ];
 
   return (
-    <Page title="Cursos">
+    <Page title="Department">
       <Button
         className="mb-2"
         onClick={() => {
-          setCourse(INITIAL_STATE);
+          setDepartment(INITIAL_STATE);
           setVisible(true);
         }}
       >
-        Criar Curso
+        Criar Departament
       </Button>
       <ListView actions={actions} columns={columns} endpoint={endpoint}>
         {({ refetch }) => (
           <Modal
-            title={`${course.id ? "Update" : "Create"} Course`}
+            title={`${department.id ? "Update" : "Create"} Department`}
             show={visible}
             handleClose={() => setVisible(false)}
             handleSave={() => handleSave(refetch)}
           >
             <Form>
               <Form.Group>
-                <Form.Label>Course Name</Form.Label>
+                <Form.Label>Departament Name</Form.Label>
                 <Form.Control
-                  name="course"
+                  name="department"
                   onChange={(event) =>
-                    setCourse({ ...course, name: event.target.value })
+                    setDepartment({ ...department, name: event.target.value })
                   }
-                  value={course.name}
+                  value={department.name}
                 />
               </Form.Group>
             </Form>
@@ -109,4 +111,4 @@ const Courses = () => {
   );
 };
 
-export default Courses;
+export default Department;

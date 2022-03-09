@@ -1,10 +1,11 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button, Form } from "react-bootstrap";
 import { toast } from "react-toastify";
 import ListView from "../../components/ListView/index";
 import Modal from "../../components/Modal/index";
 import Page from "../../components/Page/index";
 import api from "../../services/axios";
+import Courses from "../Courses";
 
 const endpoint = "/professors";
 
@@ -30,6 +31,7 @@ const INITIAL_STATE = { id: 0, name: "", departmentId: 0 , cpf: "" };
 const Professor = () => {
     const [visible, setVisible] = useState(false);
     const [departments, setDepartments] = useState([])
+    const [courses, setCourse] = useState([])
     const [Professor, setProfessor] = useState(INITIAL_STATE);
 
     useEffect(() => {
