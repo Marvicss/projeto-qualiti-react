@@ -5,7 +5,8 @@ import ListView from "../../components/ListView/index";
 import Modal from "../../components/Modal/index";
 import Page from "../../components/Page/index";
 import api from "../../services/axios";
-import Courses from "../Courses";
+
+import Department from "../Department";
 
 const endpoint = "/professors";
 
@@ -20,19 +21,23 @@ const columns = [
         value: "department",
         id: "department",
         render: (department) => department.name,
-    }, {
+    },
+        {
+        value: "department",
+        id: "department",
+        render: (department) => department.id,
+        }, {
         value: "cpf",
         id: "cpf"
     }
 ]
 
-const INITIAL_STATE = { id: 0, name: "", departmentId: 0 , cpf: "" };
+const INITIAL_STATE = { id: 0, name: "", cpf: "", departmentId: 0 , };
 
 const Professor = () => {
     const [visible, setVisible] = useState(false);
-    const [departments, setDepartments] = useState([])
-    const [courses, setCourse] = useState([])
-    const [Professor, setProfessor] = useState(INITIAL_STATE);
+    const [departments, setDepartments] = useState([]);
+    const [professor, setProfessor] = useState(INITIAL_STATE);
 
     useEffect(() => {
         api
@@ -46,17 +51,21 @@ const Professor = () => {
       }, []);
 
     const handleSave = async (refetch) => {
+      const data ={
+                    name: professor.name,
+                    cpf: professor.cpf,
+                    departmentId : professor.departmentId,
+      } ;
         try {
-            if (Professor.id) {
-                await api.put(`${endpoint}/${Professor.id}`, {
-                    name: Professor.name,
-                    cpf: Professor.cpf,
-                    departmentId : Professor.departmentId,
-                });
+            if (professor.id) {
+                await api.put(`${endpoint}/${professor.id}`, data);
+                    
+                    
+                
 
                 toast.success("Atualizado com sucesso!");
             } else {
-                await api.post(endpoint, { name: Professor.name });
+                await api.post(endpoint, data);
 
                 toast.success("Cadastrado com sucesso!");
             }
@@ -72,8 +81,8 @@ const Professor = () => {
     const actions = [
         {
             name: "Edit",
-            action: (_Professor) => {
-                setCourse(_Professor);
+            action: ({id , name, cpf , department : {id : departmentId}}) => {
+                setProfessor({id, name, cpf, departmentId} );
                 setVisible(true);
             },
         },
@@ -93,12 +102,19 @@ const Professor = () => {
         },
     ];
 
+    const onChange =({ target: {name,value}}) => {
+      setProfessor({
+          ...professor,
+          [name]: value,
+      });
+  };
+
     return (
         <Page title="Professor">
           <Button
             className="mb-2"
             onClick={() => {
-              setCourse(INITIAL_STATE);
+              setProfessor(INITIAL_STATE);
               setVisible(true);
             }}
           >
@@ -113,17 +129,45 @@ const Professor = () => {
                 handleSave={() => handleSave(refetch)}
               >
                 <Form>
-                  <Form.Group>
-                    <Form.Label>Professor Name</Form.Label>
-                    <Form.Control
-                      name="Professor"
-                      onChange={(event) =>
-                        setProfessor({ ...Professor, name: event.target.value })
-                      }
-                      value={Professor.name}
-                    />
-                  </Form.Group>
-                </Form>
+                            <Form.Group>
+                                <Form.Label>Professor Name</Form.Label>
+                                <Form.Control
+                                    name="name"
+                                    onChange= {onChange} 
+                                        
+                                    
+                                    value={professor.name}
+                                />
+                            </Form.Group>
+                            <Form.Group>
+                                <Form.Label>cpf</Form.Label>
+                                <Form.Control
+                                    name="cpf"
+                                    onChange={onChange}
+                                    value={professor.cpf}
+                                />
+                            </Form.Group>
+                            <Form.Group>
+                                <Form.Label>Departament Name</Form.Label>
+                                    <select
+                                    
+                                    className="form-control"
+                                    name="departmentId"
+                                    onChange={onChange}
+                                    
+                                    value={professor.departmentId}
+                                    >
+                                      <option>Selecione o Departamento</option>
+                                      {departments.map((department, index) => (
+                                        <option key={index} value={department.id}>
+                                          {department.name}
+                                        </option>
+                                      ))}
+                                    </select>
+                                  
+                                
+                            </Form.Group>
+                        </Form>
               </Modal>
             )}
           </ListView>
