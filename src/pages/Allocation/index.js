@@ -48,9 +48,7 @@ const Allocation = () => {
   const [allocation, setAllocation] = useState(INITIAL_STATE);
   const [professors, setProfessors] = useState([]);
   const [courses, setCourses] = useState([]);
-  const [dayOfWeek, setDayOfWeek] = useState([]);
-  const [startHour, setStartHour] = useState([]);
-  const [endtHour, setEndHour] = useState([]);
+  
 
   useEffect(() => {
     api
@@ -83,9 +81,7 @@ const Allocation = () => {
     };
     try {
       if (allocation.id) {
-        await api.put(`${endpoint}/${allocation.id}`, {
-          name: allocation.name,
-        });
+        await api.put(`${endpoint}/${allocation.id}`, data  );
 
         toast.success("Atualizado com sucesso!");
       } else {
@@ -105,8 +101,8 @@ const Allocation = () => {
   const actions = [
     {
       name: "Edit",
-      action: (_allocation) => {
-        setAllocation(_allocation);
+      action: ({ id, professor: { id: professorId }, course: { id: courseId }, dayOfWeek, startHour, endHour, }) => {
+        setAllocation({ id, professorId, courseId, dayOfWeek, startHour, endHour });
         setVisible(true);
       },
     },
@@ -184,7 +180,7 @@ const Allocation = () => {
                                     >
                                       <option>Selecione o profesor</option>
                                       {professors.map((professor, index) => (
-                                        <option key={`dois${index}`} value={professor.id}>
+                                        <option key={`${index}`} value={professor.id}>
                                           {professor.name}
                                         </option>
                                       ))}
