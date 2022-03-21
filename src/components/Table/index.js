@@ -10,7 +10,7 @@ const TableComponent = ({ actions, columns = [], items = [], refetch }) => {
       <thead>
         <tr>
           {columns.map((column, index) => (
-            <th key={index}>{column.value}</th>
+            <th key={`T-Head-${index}`}>{column.value}</th>
           ))}
 
           {actions && <th>Actions</th>}
@@ -18,7 +18,7 @@ const TableComponent = ({ actions, columns = [], items = [], refetch }) => {
       </thead>
       <tbody>
         {items.map((item, index) => (
-          <tr key={index}>
+          <tr key={`T-Body-${index}`}>
             {columns.map((column, indexColumn) => {
               const value = item[column.id];
 

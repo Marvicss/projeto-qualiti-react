@@ -4,7 +4,7 @@ import Layout from "./components/Layout";
 
 import Home from "./pages/Home";
 import Courses from "./pages/Courses";
-// import Allocation from "./pages/Allocation";
+import Allocation from "./pages/Allocation";
 // import AllocationManage from "./pages/Allocation/AllocationManage";
 import Department from "./pages/Department";
 import Professor from "./pages/Professor";
@@ -16,11 +16,11 @@ const routes = [
     visible: false,
     component: Home,
   },
-  // {
-  //   path: "/allocations",
-  //   name: "Allocations",
-  //   component: Allocation,
-  // },
+   {
+     path: "/allocations",
+     name: "Allocations",
+     component: Allocation,
+   },
   // {
   //   path: "/allocations/:id",
   //   name: "Allocations",
