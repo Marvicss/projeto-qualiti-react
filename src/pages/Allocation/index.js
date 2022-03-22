@@ -41,14 +41,13 @@ const columns = [
   
 ];
 
-const INITIAL_STATE = { id: 0, name: "" };
+const INICIAL_STATE = {id: 0, professorId: 0, courseId: 0 };
 
-const Allocation = () => {
+const Allocations = () => {
   const [visible, setVisible] = useState(false);
-  const [allocation, setAllocation] = useState(INITIAL_STATE);
-  const [professors, setProfessors] = useState([]);
   const [courses, setCourses] = useState([]);
-  
+  const [professors, setProfessors] = useState([]);
+  const [allocation, setAllocation] = useState(INICIAL_STATE);
 
   useEffect(() => {
     api
@@ -67,166 +66,152 @@ const Allocation = () => {
       .catch((error) => {
         toast.error(error.message);
       });
-     
-
   }, []);
 
   const handleSave = async (refetch) => {
-    const data ={
-      dayOfWeek : allocation.dayOfWeek,
-      courseId : allocation.courseId,
-      professorId : allocation.professorId,
-      startHour : allocation.startHour,
-      endtHour : allocation.endtHour,
+    const data = {
+      professorId: allocation.professorId,
+      courseId: allocation.courseId,
+      dayOfWeek: allocation.dayOfWeek,
+      startHour: allocation.startHour,
+      endHour: allocation.endHour,
     };
-    try {
-      if (allocation.id) {
-        await api.put(`${endpoint}/${allocation.id}`, data  );
 
-        toast.success("Atualizado com sucesso!");
-      } else {
-        await api.post(endpoint, { name: allocation.name });
+try {
+  if (allocation.id) {
+    await api.put(`${endpoint}/${allocation.id}`, data);
 
-        toast.success("Cadastrado com sucesso!");
-      }
+    toast.success("Atualizado com sucesso!");
+  } else {
+    await api.post(endpoint, data);
 
-      setVisible(false);
+    toast.success("Cadastrado com sucesso!");
+  }
 
-      await refetch();
-    } catch (error) {
-      toast.error(error.message);
-    }
-  };
+  setVisible(false);
 
-  const actions = [
-    {
-      name: "Edit",
-      action: ({ id, professor: { id: professorId }, course: { id: courseId }, dayOfWeek, startHour, endHour, }) => {
-        setAllocation({ id, professorId, courseId, dayOfWeek, startHour, endHour });
-        setVisible(true);
-      },
+  await refetch();
+} catch (error) {
+  toast.error(error.message);
+}
+};
+
+const actions = [
+  {
+    name: "Edit",
+    action: ({ id, professor: { id: professorId }, course: { id: courseId }, dayOfWeek, startHour, endHour, }) => {
+      setAllocation({ id, professorId, courseId, dayOfWeek, startHour, endHour });
+      setVisible(true);
     },
-    {
-      name: "Remove",
-      action: async (item, refetch) => {
-        if (window.confirm("Você tem certeza que deseja remover?")) {
-          try {
-            await api.delete(`${endpoint}/${item.id}`);
-            await refetch();
-            toast.info(`${item.name} foi removido`);
-          } catch (error) {
-            toast.info(error.message);
-          }
+  },
+  {
+    name: "Remove",
+    action: async (item, refetch) => {
+      if (window.confirm("Você tem certeza que deseja remover?")) {
+        try {
+          await api.delete(`${endpoint}/${item.id}`);
+          await refetch();
+          toast.info(`${item.name} foi removido`);
+        } catch (error) {
+          toast.info(error.message);
         }
-      },
+      }
     },
-  ];
+  },
+];
 
-  const onChange =({ target: {name,value}}) => {
-    setAllocation({
-        ...allocation,
-        [name]: value,
-    });
+const onChange = ({ target: { name, value } }) => {
+  setAllocation({
+    ...allocation,
+    [name]: value,
+  });
 };
 
-  return (
-    <Page title="Allocation">
-      <Button
-        className="mb-2"
-        onClick={() => {
-          setAllocation(INITIAL_STATE);
-          setVisible(true);
-        }}
+return (
+  <Page title="Alocações">
+  <Button
+    className="mb-2"
+    onClick={() => {
+      setAllocation(INICIAL_STATE);
+      setVisible(true);
+    }}
+  >
+    Criar Alocações
+  </Button>
+  <ListView actions={actions} columns={columns} endpoint={endpoint}>
+    {({ refetch }) => (
+      <Modal
+        title={`${allocation.id ? "Update" : "Create"} Allocation`}
+        show={visible}
+        handleClose={() => setVisible(false)}
+        handleSave={() => handleSave(refetch)}
       >
-        Criar allocation
-      </Button>
-      <ListView actions={actions} columns={columns} endpoint={endpoint}>
-        {({ refetch }) => (
-          <Modal
-            title={`${allocation.id ? "Update" : "Create"} Allocation`}
-            show={visible}
-            handleClose={() => setVisible(false)}
-            handleSave={() => handleSave(refetch)}
-          >
-            <Form>
-                <Form.Group>
-                            <Form.Group>
-                                <Form.Label>Course Name</Form.Label>
-                                    <select
-                                    
-                                    className="form-control"
-                                    name="courseId"
-                                    onChange={onChange}
-                                    
-                                    value={Allocation.courseId}
-                                    >
-                                      <option>Selecione o course</option>
-                                      {courses.map((course, index) => (
-                                        <option key={`um${index}`} value={course.id}>
-                                          {course.name}
-                                        </option>
-                                      ))}
-                                    </select>
-                             </Form.Group>
-                             <Form.Group>
-                                <Form.Label>professor Name</Form.Label>
-                                    <select
-                                    
-                                    className="form-control"
-                                    name="professorId"
-                                    onChange={onChange}
-                                    
-                                    value={Allocation.professorId}
-                                    >
-                                      <option>Selecione o profesor</option>
-                                      {professors.map((professor, index) => (
-                                        <option key={`${index}`} value={professor.id}>
-                                          {professor.name}
-                                        </option>
-                                      ))}
-                                    </select>
-                             
-                            
-                              </Form.Group>
-                              <Form.Group>
-                                <Form.Label>Dia da Semana</Form.Label>
-                                <Form.Control
-
-                                    className="form-control"
-                                    name="dayOfWeek"
-                                    onChange={onChange}
-                                    value={allocation.dayOfWeek}
-                                />
-                            </Form.Group>
-                            <Form.Group>
-                                <Form.Label>StartHour</Form.Label>
-                                <Form.Control
-
-                                    className="form-control"
-                                    name="startHour"
-                                    onChange={onChange}
-                                    value={allocation.startHour}
-                                />
-                            </Form.Group>
-                            <Form.Group>
-                                <Form.Label>EndHour</Form.Label>
-                                <Form.Control
-                                
-                                    className="form-control"
-                                    name="endHour"
-                                    onChange={onChange}
-                                    value={allocation.endHour}
-                                />
-                            </Form.Group>
-                            
-                 </Form.Group>
-                
-            </Form>
-          </Modal>
-        )}
-      </ListView>
-    </Page>
-  );
+        <Form>
+        <Form.Group>
+            <Form.Label>Curso Nome</Form.Label>
+            <select
+              className="form-control"
+              name="courseId"
+              onChange={onChange}
+              value={allocation.courseId}
+            >
+              <option>course select</option>
+              {courses.map((course, index) => (
+                <option key={`um${index}`} value={course.id}>
+                  {course.name}
+                </option>
+              ))}
+            </select>
+          </Form.Group>
+          <Form.Group>
+            <Form.Label>Professor name</Form.Label>
+            <select
+              className="form-control"
+              name="professorId"
+              onChange={onChange}
+              value={allocation.professorId}
+            >
+              <option>Professor select</option>
+              {professors.map((professor, index) => (
+                <option key={`${index}`} value={professor.id}>
+                  {professor.name}
+                </option>
+              ))}
+            </select>
+          </Form.Group>
+          <Form.Group>
+            <Form.Label>DayOfWeek</Form.Label>
+            <Form.Control
+              name="dayOfWeek"
+              onChange={onChange}
+              value={allocation.dayOfWeek}
+              placeholder = "MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY"
+            />
+          </Form.Group>
+          <Form.Group>
+            <Form.Label>StartHour</Form.Label> 
+            <Form.Control
+              name="startHour"
+              onChange={onChange}
+              value={allocation.startHour}
+              placeholder = "Exemplo 00:00+0000"
+            />
+          </Form.Group>
+          <Form.Group>
+            <Form.Label>EndHour</Form.Label>
+            <Form.Control
+              name="endHour"
+              onChange={onChange}
+              value={allocation.endHour}
+              placeholder = "Exemplo 00:00+0000"
+            />
+          </Form.Group>
+        </Form>
+      </Modal>
+    )}
+  </ListView>
+</Page>
+);
 };
 
-export default Allocation;
+export default Allocations;
