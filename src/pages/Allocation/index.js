@@ -8,6 +8,7 @@ import Modal from "../../components/Modal/index";
 import Page from "../../components/Page/index";
 import api from "../../services/axios";
 
+import diaDaSemana from "./dia.js";
 
 const endpoint = "/allocations";
 
@@ -179,15 +180,20 @@ return (
               ))}
             </select>
           </Form.Group>
-          <Form.Group>
             <Form.Label>DayOfWeek</Form.Label>
-            <Form.Control
+            <select
+              className="form-control"
               name="dayOfWeek"
               onChange={onChange}
               value={allocation.dayOfWeek}
-              placeholder = "MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY"
-            />
-          </Form.Group>
+            >
+              <option>dayOfWeek select</option>
+              {diaDaSemana.map((diaDaSemana, index) => (
+                <option key={`dia${index}`} value={diaDaSemana.id}>
+                  {diaDaSemana.name}
+                </option>
+              ))}
+            </select>
           <Form.Group>
             <Form.Label>StartHour</Form.Label> 
             <Form.Control
