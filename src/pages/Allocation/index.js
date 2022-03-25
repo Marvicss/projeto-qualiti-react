@@ -74,8 +74,8 @@ const Allocations = () => {
       professorId: allocation.professorId,
       courseId: allocation.courseId,
       dayOfWeek: allocation.dayOfWeek,
-      startHour: allocation.startHour,
-      endHour: allocation.endHour,
+      startHour: allocation.startHour.replace(/^(\d{2})(\d{2})/, "$1:$2+0000"), 
+      endHour: allocation.endHour.replace(/^(\d{2})(\d{2})/, "$1:$2+0000"),
     };
 
 try {
@@ -200,7 +200,7 @@ return (
               name="startHour"
               onChange={onChange}
               value={allocation.startHour}
-              placeholder = "Exemplo 00:00+0000"
+              placeholder = "Exemplo 00:00+0000 OU 0000"
             />
           </Form.Group>
           <Form.Group>
@@ -209,7 +209,7 @@ return (
               name="endHour"
               onChange={onChange}
               value={allocation.endHour}
-              placeholder = "Exemplo 00:00+0000"
+              placeholder = "Exemplo 00:00+0000 OU 0000"
             />
           </Form.Group>
         </Form>
