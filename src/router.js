@@ -18,7 +18,7 @@ const routes = [
   },
    {
      path: "/allocations",
-     name: "Allocations",
+     name: "Alocações",
      component: Allocation,
    },
   // {
@@ -29,12 +29,12 @@ const routes = [
   // },
    {
      path: "/departament",
-     name: "Departament",
+     name: "Departamentos",
      component: Department,
    },
   {
     path: "/courses",
-    name: "Courses",
+    name: "Cursos",
     component: Courses,
   },
    {
